@@ -185,7 +185,7 @@ h2 { font-size: 1.05rem; margin: 6px 0 0; }
 <script>
 // Answers go to a Google Apps Script web app (one row per click in a Google Sheet).
 // Until the server confirms, each answer also waits in this browser's queue and is re-sent automatically.
-const ENDPOINT = "__ENDPOINT__";
+const ENDPOINT = "https://script.google.com/macros/s/AKfycbzaR4Oank_URF_Fmbf_n7n5oJ_1O9WfWEZWgqtcPKpZ4W6xys4sl6WOY13XSnLwm_Ch/exec";
 (async () => {
   const $ = id => document.getElementById(id);
   const BTN = ["b-yes", "b-no", "b-maybe"].map($);

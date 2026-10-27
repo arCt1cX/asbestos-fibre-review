@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Asbestos Fibre Review</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<style>
+/* Workbench layout: whole photo with the box to judge on the left; lens, question and buttons on the right;
+   references (INAIL tables and photos labelled by Ahmad) below. Yellow = the box to judge. */
+:root {
+  --bg: #eef0f3;
+  --paper: #ffffff;
+  --fg: #1b2130;
+  --muted: #5a6376;
+  --rule: #d7dce4;
+  --accent: #2c4c9e;
+  --accent-soft: #e3e9f7;
+  --mark: #ffd21a;
+  --yes: #23794a;
+  --yes-soft: #e1f1e7;
+  --no: #a8383a;
+  --no-soft: #f6e3e3;
+  --maybe: #8a6512;
+  --maybe-soft: #f6ecd6;
+  --body: "Source Sans 3", "Segoe UI", Roboto, Arial, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #12151c; --paper: #1a1f29; --fg: #e4e8f0; --muted: #9aa4b6; --rule: #2c3342;
+    --accent: #8fa9ec; --accent-soft: #232d45; --yes: #7ccf9c; --yes-soft: #1d3127;
+    --no: #ec9a9a; --no-soft: #3a2224; --maybe: #e2bd6b; --maybe-soft: #362d1a; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #12151c; --paper: #1a1f29; --fg: #e4e8f0; --muted: #9aa4b6; --rule: #2c3342;
+  --accent: #8fa9ec; --accent-soft: #232d45; --yes: #7ccf9c; --yes-soft: #1d3127;
+  --no: #ec9a9a; --no-soft: #3a2224; --maybe: #e2bd6b; --maybe-soft: #362d1a; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { margin: 0; }
+body {
+  background: var(--bg); color: var(--fg); font-family: var(--body); font-size: 16px; line-height: 1.5;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 16px 40px;
+}
+.wrap { max-width: 1500px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px; }
+header { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 20px; }
+h1 { font-size: 1.3rem; margin: 0; }
+.sub { color: var(--muted); font-size: 14.5px; margin: 0; flex: 1 1 420px; }
+.progress { display: flex; flex-direction: column; gap: 6px; }
+.bar { height: 8px; background: var(--rule); border-radius: 99px; overflow: hidden; }
+.bar > i { display: block; height: 100%; width: 0; background: var(--accent); transition: width .2s; }
+.stats { display: flex; flex-wrap: wrap; gap: 4px 16px; font-family: var(--mono); font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; align-items: center; }
+.stats b { color: var(--fg); font-weight: 600; }
+.sync { font-weight: 600; }
+.sync.ok { color: var(--yes); }
+.sync.wait { color: var(--maybe); }
+.sync.bad { color: var(--no); }
+.who { display: flex; gap: 8px; align-items: center; font-size: 14px; color: var(--muted); }
+.who input { font: inherit; padding: 4px 8px; border: 1px solid var(--rule); border-radius: 6px; background: var(--paper); color: var(--fg); width: 11em; }
+.main { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 16px; align-items: start; }
+@media (max-width: 980px) { .main { grid-template-columns: 1fr; } }
+.photo { position: relative; background: #000; border-radius: 6px; overflow: hidden; line-height: 0; }
+.photo img { display: block; width: 100%; height: auto; max-height: calc(100vh - 170px); object-fit: contain; }
+.target { position: absolute; border: 1.5px solid var(--mark); pointer-events: none; }
+.ring { position: absolute; border: 1.5px dashed var(--mark); border-radius: 50%; pointer-events: none; opacity: .8; }
+.clean .target, .clean .ring { display: none; }
+.side { display: flex; flex-direction: column; gap: 12px; }
+.lens {
+  width: 100%; aspect-ratio: 1; border-radius: 6px; border: 1px solid var(--rule); background-color: #808080;
+  background-repeat: no-repeat; position: relative; overflow: hidden;
+}
+.lens .target { border-width: 1px; }
+.lens .scale { position: absolute; left: 8px; bottom: 8px; line-height: 1.2; font-family: var(--mono); font-size: 12px; color: #fff; display: flex; flex-direction: column; gap: 3px; text-shadow: 0 0 3px #000; }
+.lens .scale i { display: block; height: 4px; background: #fff; box-shadow: 0 0 2px #000; }
+.lab { font-family: var(--mono); font-size: 12.5px; color: var(--muted); }
+.q { font-weight: 700; font-size: 1.1rem; margin: 0; }
+.stamp { font-family: var(--mono); font-size: 12.5px; font-weight: 600; min-height: 1.2em; }
+.buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+button {
+  font: inherit; font-weight: 600; border-radius: 8px; padding: 12px 8px; cursor: pointer;
+  border: 2px solid transparent; display: flex; flex-direction: column; align-items: center; gap: 1px;
+}
+button .k { font-family: var(--mono); font-size: 11.5px; font-weight: 400; opacity: .8; }
+button:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+button:disabled { opacity: .45; cursor: not-allowed; }
+.b-yes { background: var(--yes-soft); color: var(--yes); border-color: var(--yes); }
+.b-no { background: var(--no-soft); color: var(--no); border-color: var(--no); }
+.b-maybe { background: var(--maybe-soft); color: var(--maybe); border-color: var(--maybe); }
+.b-back { background: var(--paper); color: var(--fg); border-color: var(--rule); }
+.b-small { display: inline-flex; flex-direction: row; padding: 4px 10px; font-size: 13px; background: var(--paper); color: var(--fg); border: 1px solid var(--rule); border-radius: 6px; }
+.sel { box-shadow: inset 0 0 0 3px currentColor; }
+.msg { border-left: 4px solid var(--accent); background: var(--accent-soft); padding: 10px 14px; border-radius: 0 6px 6px 0; font-size: 14.5px; }
+.msg.warn { border-color: var(--no); background: var(--no-soft); }
+.msg.done { border-color: var(--yes); background: var(--yes-soft); }
+.rules { background: var(--paper); border: 1px solid var(--rule); border-radius: 6px; padding: 10px 14px; font-size: 14px; }
+.rules ul { margin: 4px 0 0; padding-left: 1.2em; }
+.rules li { margin-bottom: 3px; }
+h2 { font-size: 1.05rem; margin: 6px 0 0; }
+.refs { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+.ref { background: var(--paper); border: 1px solid var(--rule); border-radius: 6px; padding: 8px; display: flex; flex-direction: column; align-items: stretch; gap: 6px; cursor: zoom-in; text-align: left; font: inherit; font-weight: 400; color: var(--fg); }
+.ref img { width: 100%; height: 150px; object-fit: cover; border-radius: 3px; background: #fff; }
+.ref span { font-size: 13.5px; color: var(--muted); }
+.box-dialog { position: fixed; inset: 0; background: rgba(0,0,0,.85); display: flex; flex-direction: column; gap: 8px; padding: 16px; z-index: 20; }
+.box-dialog .bar2 { display: flex; justify-content: space-between; align-items: center; color: #fff; gap: 12px; flex-wrap: wrap; }
+.box-dialog .scroll { flex: 1; overflow: auto; border-radius: 6px; background: #111; }
+.box-dialog img { display: block; max-width: none; }
+.box-dialog img.fit { max-width: 100%; max-height: 100%; height: auto; margin: 0 auto; }
+.box-dialog button { padding: 8px 14px; flex-direction: row; background: #fff; color: #111; display: inline-flex; }
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>Asbestos Fibre Review</h1>
+    <p class="sub">The <b>yellow</b> box (with the dashed circle around it) is the object to judge: should it be counted as a fibre? These are the cases where the model and the labels disagree, shuffled. Every answer is saved online immediately, so you can stop at any time and continue later, even from another computer.</p>
+  </header>
+  <div class="progress">
+    <div class="bar" aria-hidden="true"><i id="bar"></i></div>
+    <div class="stats">
+      <span>Done <b id="s-done">0</b> of <b id="s-tot">…</b></span>
+      <span>Count <b id="s-yes">0</b></span>
+      <span>Don't count <b id="s-no">0</b></span>
+      <span>Not sure <b id="s-maybe">0</b></span>
+      <span class="sync wait" id="sync">Connecting…</span>
+      <label class="who" for="who">Your name <input id="who" maxlength="40" placeholder="e.g. Ahmad"></label>
+    </div>
+  </div>
+
+  <div id="status" class="msg" hidden></div>
+
+  <div class="main">
+    <div class="photo" id="photo">
+      <img id="img" alt="Whole microscope photo with the box to judge in yellow">
+      <div class="ring" id="ring" hidden></div>
+      <div class="target" id="target" hidden></div>
+    </div>
+
+    <div class="side">
+      <div class="lens" id="lens" role="img" aria-label="Area around the box, magnified">
+        <div class="target" id="ltarget" hidden></div>
+        <div class="scale"><i id="scalebar"></i><span>10 µm</span></div>
+      </div>
+      <span class="lab" id="caseid">Loading cases…</span>
+      <p class="q">Should this be counted as a fibre?</p>
+      <span class="stamp" id="stamp"></span>
+      <div class="buttons">
+        <button class="b-yes" id="b-yes" data-d="count" disabled>Count <span class="k">key C</span></button>
+        <button class="b-no" id="b-no" data-d="no_count" disabled>Don't count <span class="k">key N</span></button>
+        <button class="b-maybe" id="b-maybe" data-d="not_sure" disabled>Not sure <span class="k">key S</span></button>
+        <button class="b-back" id="b-back" disabled>Back <span class="k">key ←</span></button>
+      </div>
+      <div class="rules">
+        <b>Count</b> it if it is longer than 5 µm, thinner than 3 µm and at least 3 times longer than wide.
+        <ul>
+          <li>Don't count it with an attached particle larger than 3 µm, or if it is a tangle or a compact bundle.</li>
+          <li>Crossing fibres: each one counts. A split fibre counts as 1.</li>
+          <li>The bar in the magnified view = 10 µm. Hold the <b>space bar</b> to hide the box and the circle.</li>
+          <li>If in doubt: <b>Not sure</b>. You can go back and change any answer.</li>
+        </ul>
+      </div>
+      <button class="b-small" id="copy">Copy my answers (backup)</button>
+    </div>
+  </div>
+
+  <h2>References (click to enlarge)</h2>
+  <div class="refs">
+    <button class="ref" data-src="ref/rules_single.jpg"><img src="ref/rules_single.jpg" alt=""><span>INAIL table: single fibres. The number at the bottom right = how many are counted.</span></button>
+    <button class="ref" data-src="ref/rules_particles.jpg"><img src="ref/rules_particles.jpg" alt=""><span>INAIL table: fibres with attached particles.</span></button>
+    <button class="ref" data-src="ref/rules_crossings.jpg"><img src="ref/rules_crossings.jpg" alt=""><span>INAIL table: crossings, splits and bundles.</span></button>
+    <button class="ref" data-src="ref/labelled_pc450newF-190.jpg"><img src="ref/labelled_pc450newF-190.jpg" alt=""><span>Photo with your labels: 57 fibres.</span></button>
+    <button class="ref" data-src="ref/labelled_pc450newF-149.jpg"><img src="ref/labelled_pc450newF-149.jpg" alt=""><span>Photo with your labels: 55 fibres.</span></button>
+    <button class="ref" data-src="ref/labelled_pc450newF-122.jpg"><img src="ref/labelled_pc450newF-122.jpg" alt=""><span>Photo with your labels: 54 fibres. Green = single, purple = with particle, orange = split, red = crossing.</span></button>
+  </div>
+</div>
+
+<div class="box-dialog" id="dialog" hidden>
+  <div class="bar2"><span id="dlg-cap"></span><span><button id="dlg-zoom">Actual size</button> <button id="dlg-close">Close (Esc)</button></span></div>
+  <div class="scroll"><img id="dlg-img" alt="Enlarged reference"></div>
+</div>
+
+<script>
+// Answers go to a Google Apps Script web app (one row per click in a Google Sheet).
+// Until the server confirms, each answer also waits in this browser's queue and is re-sent automatically.
+const ENDPOINT = "__ENDPOINT__";
+(async () => {
+  const $ = id => document.getElementById(id);
+  const BTN = ["b-yes", "b-no", "b-maybe"].map($);
+  const LABEL = { count: "Count", no_count: "Don't count", not_sure: "Not sure" };
+  const PX_PER_UM = 4;
+  const store = {
+    get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
+    set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} },
+  };
+  let cases = [], dec = {}, cur = -1, online = false;
+  let queue = store.get("fibre-review-queue", []);   // [{id, d, t, who}] not yet confirmed by the server
+
+  const who = $("who");
+  who.value = store.get("fibre-review-who", "");
+  who.addEventListener("change", () => store.set("fibre-review-who", who.value.trim()));
+
+  function status(text, kind) {
+    const el = $("status");
+    el.hidden = !text; el.textContent = text || ""; el.className = "msg" + (kind ? " " + kind : "");
+  }
+  function sync(text, kind) { const el = $("sync"); el.textContent = text; el.className = "sync " + kind; }
+  function syncState() {
+    if (queue.length) sync(`${queue.length} answer${queue.length > 1 ? "s" : ""} waiting to be saved…`, "wait");
+    else if (online) sync("All answers saved online ✓", "ok");
+  }
+
+  function stats() {
+    const v = Object.values(dec);
+    const n = d => v.filter(x => x === d).length;
+    $("s-done").textContent = v.length; $("s-tot").textContent = cases.length;
+    $("s-yes").textContent = n("count"); $("s-no").textContent = n("no_count"); $("s-maybe").textContent = n("not_sure");
+    $("bar").style.width = cases.length ? (100 * v.length / cases.length) + "%" : "0";
+  }
+
+  function place() {
+    if (cur < 0) return;
+    const [, , x0, y0, x1, y1] = cases[cur];
+    const img = $("img");
+    if (!img.naturalWidth) return;
+    const W = img.naturalWidth, H = img.naturalHeight;
+    const r = img.getBoundingClientRect(), k = Math.min(r.width / W, r.height / H);
+    const offX = (r.width - W * k) / 2, offY = (r.height - H * k) / 2;
+    const t = $("target"), ring = $("ring");
+    const m = 5;   // margin: the box sits a little outside the fibre so it doesn't cover it
+    Object.assign(t.style, { left: offX + x0 * k - m + "px", top: offY + y0 * k - m + "px", width: (x1 - x0) * k + 2 * m + "px", height: (y1 - y0) * k + 2 * m + "px" });
+    const cx = offX + (x0 + x1) / 2 * k, cy = offY + (y0 + y1) / 2 * k;
+    const rad = Math.max(40, Math.hypot(x1 - x0, y1 - y0) * k / 2 + 26);
+    Object.assign(ring.style, { left: cx - rad + "px", top: cy - rad + "px", width: 2 * rad + "px", height: 2 * rad + "px" });
+    t.hidden = ring.hidden = false;
+    // lens: square area 3 times the fibre (at least 240 px = 60 µm), centred on it
+    const lens = $("lens"), L = lens.getBoundingClientRect().width;
+    const side = Math.min(Math.max(240, 3 * Math.max(x1 - x0, y1 - y0)), Math.min(W, H));
+    const z = L / side;
+    let lx = (x0 + x1) / 2 - side / 2, ly = (y0 + y1) / 2 - side / 2;
+    lx = Math.max(0, Math.min(W - side, lx)); ly = Math.max(0, Math.min(H - side, ly));
+    lens.style.backgroundImage = `url("${img.src}")`;
+    lens.style.backgroundSize = `${W * z}px ${H * z}px`;
+    lens.style.backgroundPosition = `${-lx * z}px ${-ly * z}px`;
+    const lm = 10;
+    Object.assign($("ltarget").style, { left: (x0 - lx) * z - lm + "px", top: (y0 - ly) * z - lm + "px", width: (x1 - x0) * z + 2 * lm + "px", height: (y1 - y0) * z + 2 * lm + "px" });
+    $("ltarget").hidden = false;
+    $("scalebar").style.width = 10 * PX_PER_UM * z + "px";
+  }
+
+  function show(i) {
+    cur = i;
+    const [id, stem, x0, y0, x1, y1] = cases[i];
+    const src = `photos/${stem}.jpg`;
+    const img = $("img");
+    if (!img.src.endsWith(src)) { $("target").hidden = $("ring").hidden = $("ltarget").hidden = true; img.src = src; }
+    else place();
+    const len = Math.hypot(x1 - x0, y1 - y0) / PX_PER_UM;
+    $("caseid").textContent = `Case ${i + 1} of ${cases.length} · ${id} · box diagonal ${len.toFixed(0)} µm`;
+    const d = dec[id];
+    $("stamp").textContent = d ? "Your answer: " + LABEL[d] : "";
+    BTN.forEach(b => b.classList.toggle("sel", b.dataset.d === d));
+    $("b-back").disabled = i === 0;
+    const next = cases[i + 1];
+    if (next) new Image().src = `photos/${next[1]}.jpg`;
+  }
+  $("img").addEventListener("load", place);
+  window.addEventListener("resize", place);
+
+  function firstOpen() {
+    const i = cases.findIndex(c => !dec[c[0]]);
+    return i < 0 ? cases.length - 1 : i;
+  }
+
+  // send the queue, oldest first; stop at the first failure and retry later
+  let flushing = false;
+  async function flush() {
+    if (flushing || !queue.length) { syncState(); return; }
+    flushing = true;
+    try {
+      while (queue.length) {
+        const a = queue[0];
+        const r = await fetch(ENDPOINT, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(a) });
+        const j = await r.json();
+        if (!j.ok) throw new Error("rejected");
+        queue.shift(); store.set("fibre-review-queue", queue);
+        online = true;
+      }
+    } catch (e) {
+      sync(`${queue.length} answer${queue.length > 1 ? "s" : ""} not saved yet: no connection, retrying…`, "bad");
+    } finally { flushing = false; if (!queue.length) syncState(); }
+  }
+  setInterval(flush, 15000);
+  window.addEventListener("online", flush);
+
+  const dlg = $("dialog"), dimg = $("dlg-img");
+
+  function answer(d) {
+    if (cur < 0 || !dlg.hidden) return;
+    const id = cases[cur][0];
+    dec[id] = d; stats();
+    queue.push({ id, d, t: Date.now(), who: who.value.trim() });
+    store.set("fibre-review-queue", queue);
+    flush();
+    if (Object.keys(dec).length === cases.length) status("All cases have an answer. Thank you! As soon as the counter above says “All answers saved online ✓” you can close the page.", "done");
+    const n = cases.findIndex((c, k) => k > cur && !dec[c[0]]);
+    show(n >= 0 ? n : (cur + 1 < cases.length ? cur + 1 : cur));
+  }
+
+  BTN.forEach(b => b.addEventListener("click", () => answer(b.dataset.d)));
+  $("b-back").addEventListener("click", () => cur > 0 && show(cur - 1));
+
+  $("copy").addEventListener("click", async () => {
+    const text = JSON.stringify({ reviewer: who.value.trim(), answers: dec });
+    try { await navigator.clipboard.writeText(text); $("copy").textContent = "Copied ✓ (paste it in a message)"; }
+    catch (e) { status("Copy didn't work here. Your answers are saved online anyway.", "warn"); }
+  });
+
+  // references
+  document.querySelectorAll(".ref").forEach(b => b.addEventListener("click", () => {
+    dimg.src = b.dataset.src; dimg.className = "fit";
+    $("dlg-cap").textContent = b.querySelector("span").textContent;
+    $("dlg-zoom").textContent = "Actual size";
+    dlg.hidden = false; $("dlg-close").focus();
+  }));
+  $("dlg-zoom").addEventListener("click", () => {
+    const fit = dimg.classList.toggle("fit");
+    $("dlg-zoom").textContent = fit ? "Actual size" : "Fit to screen";
+  });
+  const closeDlg = () => { dlg.hidden = true; };
+  $("dlg-close").addEventListener("click", closeDlg);
+
+  document.addEventListener("keydown", e => {
+    if (e.ctrlKey || e.metaKey || e.altKey || e.target === who) return;
+    if (!dlg.hidden) { if (e.key === "Escape") closeDlg(); return; }
+    if (e.key === " ") { e.preventDefault(); document.body.classList.add("clean"); return; }
+    const k = e.key.toLowerCase();
+    if (k === "c") answer("count");
+    else if (k === "n") answer("no_count");
+    else if (k === "s") answer("not_sure");
+    else if (e.key === "ArrowLeft" || e.key === "Backspace") { if (cur > 0) { e.preventDefault(); show(cur - 1); } }
+    else if (e.key === "ArrowRight") { if (cur + 1 < cases.length) show(cur + 1); }
+  });
+  document.addEventListener("keyup", e => { if (e.key === " ") document.body.classList.remove("clean"); });
+  window.addEventListener("blur", () => document.body.classList.remove("clean"));
+
+  try { cases = await (await fetch("cases.json", { cache: "no-store" })).json(); }
+  catch (e) { status("Couldn't load the list of cases. Please reload the page.", "warn"); return; }
+
+  // answers already saved online (from any computer), then this browser's unsent ones on top
+  try {
+    const j = await (await fetch(ENDPOINT + "?t=" + Date.now(), { cache: "no-store" })).json();
+    Object.assign(dec, j.answers || {});
+    online = true;
+  } catch (e) { sync("Can't reach the online sheet right now: answers will be kept here and sent later", "bad"); }
+  for (const a of queue) dec[a.id] = a.d;
+  stats();
+  BTN.forEach(b => b.disabled = false);
+  show(firstOpen());
+  if (Object.keys(dec).length === cases.length) status("All cases already have an answer. You can review them with Back.", "done");
+  flush(); syncState();
+})();
+</script>

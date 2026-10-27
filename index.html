@@ -213,7 +213,7 @@ const ENDPOINT = "https://script.google.com/macros/s/AKfycbzaR4Oank_URF_Fmbf_n7n
   }
 
   function stats() {
-    const v = Object.values(dec);
+    const v = cases.map(c => dec[c[0]]).filter(Boolean);   // only answers to cases on this page
     const n = d => v.filter(x => x === d).length;
     $("s-done").textContent = v.length; $("s-tot").textContent = cases.length;
     $("s-yes").textContent = n("count"); $("s-no").textContent = n("no_count"); $("s-maybe").textContent = n("not_sure");
@@ -304,7 +304,7 @@ const ENDPOINT = "https://script.google.com/macros/s/AKfycbzaR4Oank_URF_Fmbf_n7n
     queue.push({ id, d, t: Date.now(), who: who.value.trim() });
     store.set("fibre-review-queue", queue);
     flush();
-    if (Object.keys(dec).length === cases.length) status("All cases have an answer. Thank you! As soon as the counter above says “All answers saved online ✓” you can close the page.", "done");
+    if (cases.every(c => dec[c[0]])) status("All cases have an answer. Thank you! As soon as the counter above says “All answers saved online ✓” you can close the page.", "done");
     const n = cases.findIndex((c, k) => k > cur && !dec[c[0]]);
     show(n >= 0 ? n : (cur + 1 < cases.length ? cur + 1 : cur));
   }
@@ -359,7 +359,7 @@ const ENDPOINT = "https://script.google.com/macros/s/AKfycbzaR4Oank_URF_Fmbf_n7n
   stats();
   BTN.forEach(b => b.disabled = false);
   show(firstOpen());
-  if (Object.keys(dec).length === cases.length) status("All cases already have an answer. You can review them with Back.", "done");
+  if (cases.every(c => dec[c[0]])) status("All cases already have an answer. You can review them with Back.", "done");
   flush(); syncState();
 })();
 </script>

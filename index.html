@@ -201,6 +201,7 @@ const ENDPOINT = "https://script.google.com/macros/s/AKfycbzaR4Oank_URF_Fmbf_n7n
   const BTN = ["b-yes", "b-no", "b-maybe"].map($);
   const LABEL = { count: "Count", no_count: "Don't count", not_sure: "Not sure" };
   const PX_PER_UM = 4;
+  const BLUR_UM = 0.5;   // optical blur makes fibres look ~0.5-1 um thicker: subtract the low end
   const store = {
     get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
     set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} },
@@ -270,14 +271,15 @@ const ENDPOINT = "https://script.google.com/macros/s/AKfycbzaR4Oank_URF_Fmbf_n7n
     set("me1", { cx: X(p1x), cy: Y(p1y) }); set("me2", { cx: X(p2x), cy: Y(p2y) });
     const len = Math.hypot(p2x - p1x, p2y - p1y) || 1, nx = -(p2y - p1y) / len, ny = (p2x - p1x) / len;
     const mx = (p1x + p2x) / 2, my = (p1y + p2y) / 2;
-    set("mw", { x1: X(mx - nx * wpx / 2), y1: Y(my - ny * wpx / 2), x2: X(mx + nx * wpx / 2), y2: Y(my + ny * wpx / 2) });
-    const Lum = len / PX_PER_UM, D = wpx / PX_PER_UM, R = Lum / Math.max(D, 0.25);
+    const wd = Math.max(wpx - BLUR_UM * PX_PER_UM, 1);
+    set("mw", { x1: X(mx - nx * wd / 2), y1: Y(my - ny * wd / 2), x2: X(mx + nx * wd / 2), y2: Y(my + ny * wd / 2) });
+    const Lum = len / PX_PER_UM, D = Math.max(wpx / PX_PER_UM - BLUR_UM, 0.25), R = Lum / D;
     const chk = (ok, txt) => `<span class="${ok ? "ok" : "bad"}">${ok ? "✓" : "✗"} ${txt}</span>`;
     $("measure").innerHTML = `<b>Measured automatically</b>`
       + chk(Lum > 5, `length ${Lum.toFixed(1)} µm (rule: > 5)`)
-      + chk(D < 3, `width ${D >= 6 ? "≥ 6" : D.toFixed(1)} µm (rule: < 3)`)
+      + chk(D < 3, `width ${D >= 5.5 ? "≥ 5.5" : D.toFixed(1)} µm (rule: < 3)`)
       + chk(R >= 3, `ratio ${R.toFixed(1)} : 1 (rule: ≥ 3 : 1)`)
-      + `<span class="note">Cyan line = fibre found in the box, magenta = width. The width looks about 0.5–1 µm larger than it is because of optical blur, and faint, curved or Y-shaped fibres can be measured wrongly.</span>`;
+      + `<span class="note">Cyan line = fibre found in the box, magenta = width. Optical blur makes fibres look about 0.5–1 µm thicker, so 0.5 µm is already subtracted from the width shown. Faint, curved or Y-shaped fibres can be measured wrongly.</span>`;
   }
 
   function show(i) {

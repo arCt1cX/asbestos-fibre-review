@@ -75,6 +75,13 @@ h1 { font-size: 1.3rem; margin: 0; }
   background-repeat: no-repeat; position: relative; overflow: hidden;
 }
 .lens .target { border-width: 1px; }
+.lens svg { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.measure { font-family: var(--mono); font-size: 12.5px; display: flex; flex-direction: column; gap: 2px; background: var(--paper); border: 1px solid var(--rule); border-radius: 6px; padding: 8px 10px; }
+.measure .ok { color: var(--yes); } .measure .bad { color: var(--no); }
+.measure .note { color: var(--muted); font-family: var(--body); font-size: 12.5px; }
+.toggle { display: flex; align-items: center; gap: 8px; font-size: 14px; cursor: pointer; }
+.toggle input { width: 18px; height: 18px; accent-color: var(--accent); }
+.nomeasure #msvg, .nomeasure #measure { display: none; }
 .lens .scale { position: absolute; left: 8px; bottom: 8px; line-height: 1.2; font-family: var(--mono); font-size: 12px; color: #fff; display: flex; flex-direction: column; gap: 3px; text-shadow: 0 0 3px #000; }
 .lens .scale i { display: block; height: 4px; background: #fff; box-shadow: 0 0 2px #000; }
 .lab { font-family: var(--mono); font-size: 12.5px; color: var(--muted); }
@@ -142,8 +149,11 @@ h2 { font-size: 1.05rem; margin: 6px 0 0; }
     <div class="side">
       <div class="lens" id="lens" role="img" aria-label="Area around the box, magnified">
         <div class="target" id="ltarget" hidden></div>
+        <svg id="msvg" aria-hidden="true"><line id="mline" stroke="#00e5ff" stroke-width="2"/><line id="mw" stroke="#ff4fd8" stroke-width="2"/><circle id="me1" r="4" fill="#00e5ff"/><circle id="me2" r="4" fill="#00e5ff"/></svg>
         <div class="scale"><i id="scalebar"></i><span>10 µm</span></div>
       </div>
+      <label class="toggle" for="showm"><input type="checkbox" id="showm" checked> Show automatic measurement <span class="lab">(key M)</span></label>
+      <div class="measure" id="measure"></div>
       <span class="lab" id="caseid">Loading cases…</span>
       <p class="q">Should this be counted as a fibre?</p>
       <span class="stamp" id="stamp"></span>
@@ -198,6 +208,10 @@ const ENDPOINT = "https://script.google.com/macros/s/AKfycbzaR4Oank_URF_Fmbf_n7n
   let cases = [], dec = {}, cur = -1, online = false;
   let queue = store.get("fibre-review-queue", []);   // [{id, d, t, who}] not yet confirmed by the server
 
+  const showm = $("showm");
+  showm.checked = store.get("fibre-review-measure", true);
+  const applyM = () => { document.body.classList.toggle("nomeasure", !showm.checked); store.set("fibre-review-measure", showm.checked); };
+  showm.addEventListener("change", applyM); applyM();
   const who = $("who");
   who.value = store.get("fibre-review-who", "");
   who.addEventListener("change", () => store.set("fibre-review-who", who.value.trim()));
@@ -248,6 +262,22 @@ const ENDPOINT = "https://script.google.com/macros/s/AKfycbzaR4Oank_URF_Fmbf_n7n
     Object.assign($("ltarget").style, { left: (x0 - lx) * z - lm + "px", top: (y0 - ly) * z - lm + "px", width: (x1 - x0) * z + 2 * lm + "px", height: (y1 - y0) * z + 2 * lm + "px" });
     $("ltarget").hidden = false;
     $("scalebar").style.width = 10 * PX_PER_UM * z + "px";
+    // misura automatica: linea della fibra (azzurra), spessore a meta' (magenta)
+    const [, , , , , , p1x, p1y, p2x, p2y, wpx] = cases[cur];
+    const X = x => (x - lx) * z, Y = y => (y - ly) * z;
+    const set = (id, a) => { const el = $(id); for (const k in a) el.setAttribute(k, a[k]); };
+    set("mline", { x1: X(p1x), y1: Y(p1y), x2: X(p2x), y2: Y(p2y) });
+    set("me1", { cx: X(p1x), cy: Y(p1y) }); set("me2", { cx: X(p2x), cy: Y(p2y) });
+    const len = Math.hypot(p2x - p1x, p2y - p1y) || 1, nx = -(p2y - p1y) / len, ny = (p2x - p1x) / len;
+    const mx = (p1x + p2x) / 2, my = (p1y + p2y) / 2;
+    set("mw", { x1: X(mx - nx * wpx / 2), y1: Y(my - ny * wpx / 2), x2: X(mx + nx * wpx / 2), y2: Y(my + ny * wpx / 2) });
+    const Lum = len / PX_PER_UM, D = wpx / PX_PER_UM, R = Lum / Math.max(D, 0.25);
+    const chk = (ok, txt) => `<span class="${ok ? "ok" : "bad"}">${ok ? "✓" : "✗"} ${txt}</span>`;
+    $("measure").innerHTML = `<b>Measured automatically</b>`
+      + chk(Lum > 5, `length ${Lum.toFixed(1)} µm (rule: > 5)`)
+      + chk(D < 3, `width ${D >= 6 ? "≥ 6" : D.toFixed(1)} µm (rule: < 3)`)
+      + chk(R >= 3, `ratio ${R.toFixed(1)} : 1 (rule: ≥ 3 : 1)`)
+      + `<span class="note">Cyan line = fibre found in the box, magenta = width. The width looks about 0.5–1 µm larger than it is because of optical blur, and faint, curved or Y-shaped fibres can be measured wrongly.</span>`;
   }
 
   function show(i) {
@@ -340,6 +370,7 @@ const ENDPOINT = "https://script.google.com/macros/s/AKfycbzaR4Oank_URF_Fmbf_n7n
     if (k === "c") answer("count");
     else if (k === "n") answer("no_count");
     else if (k === "s") answer("not_sure");
+    else if (k === "m") { showm.checked = !showm.checked; applyM(); }
     else if (e.key === "ArrowLeft" || e.key === "Backspace") { if (cur > 0) { e.preventDefault(); show(cur - 1); } }
     else if (e.key === "ArrowRight") { if (cur + 1 < cases.length) show(cur + 1); }
   });

@@ -68,7 +68,7 @@ h1 { font-size: 1.3rem; margin: 0; }
 .photo img { display: block; width: 100%; height: auto; max-height: calc(100vh - 170px); object-fit: contain; }
 .target { position: absolute; border: 1.5px solid var(--mark); pointer-events: none; }
 .ring { position: absolute; border: 1.5px dashed var(--mark); border-radius: 50%; pointer-events: none; opacity: .8; }
-.clean .target, .clean .ring { display: none; }
+.clean .target, .clean .ring, .clean #msvg { display: none; }
 .side { display: flex; flex-direction: column; gap: 12px; }
 .lens {
   width: 100%; aspect-ratio: 1; border-radius: 6px; border: 1px solid var(--rule); background-color: #808080;
@@ -168,7 +168,7 @@ h2 { font-size: 1.05rem; margin: 6px 0 0; }
         <ul>
           <li>Don't count it with an attached particle larger than 3 µm, or if it is a tangle or a compact bundle.</li>
           <li>Crossing fibres: each one counts. A split fibre counts as 1.</li>
-          <li>The bar in the magnified view = 10 µm. Hold the <b>space bar</b> to hide the box and the circle.</li>
+          <li>The bar in the magnified view = 10 µm. Hold the <b>space bar</b> to hide the box, the circle and the measurement lines.</li>
           <li>If in doubt: <b>Not sure</b>. You can go back and change any answer.</li>
         </ul>
       </div>
